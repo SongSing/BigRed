@@ -211,8 +211,9 @@ function makePlayer(x, y, w, h, speed)
 			}
 			else if (e.type === "enemy")
 			{
-				if (this.willCollideWith(e, _x, _y))
+				if (this.willCollideWith(e, _x, _y) && !levelBuffer)
 				{
+					levelBuffer = true;
 					lose();
 				}
 			}
