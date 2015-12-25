@@ -149,9 +149,41 @@ State.prototype.draw = function(canvas)
 {
 	this.drawFunctionBefore(canvas);
 
+	var fns = {};
+	var keys = [];
+
 	for (var i = 0; i < this.entities.length; i++)
 	{
-		this.entities[i]._draw(canvas);
+		var e = this.entities[i];
+
+		if (e.zIndex === undefined)
+		{
+			e.zIndex = 0;
+		}
+
+		if (!fns.hasOwnProperty(e.zIndex))
+		{
+			fns[e.zIndex] = [];
+			keys.push(e.zIndex);
+		}
+
+		fns[e.zIndex].push(e);
+	}
+
+	keys.sort(function(a, b)
+	{
+		return a - b;
+	});
+
+	for (var i = 0; i < keys.length; i++)
+	{
+		var k = keys[i];
+		var arr = fns[k];
+
+		for (var j = 0; j < arr.length; j++)
+		{
+			arr[j]._draw(canvas);
+		}
 	}
 
 	this.drawFunctionAfter(canvas);

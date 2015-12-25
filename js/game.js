@@ -49,6 +49,14 @@ function proceed()
 	loadLevel(currentLevel);
 }
 
+function portalById(id)
+{
+	return game.getEntities(function(e)
+	{
+		return e.type === "portal" && e.id === id;
+	})[0];
+}
+
 game.drawFunctionBefore = function(canvas)
 {
 	canvas.fill("#AAAAAA");
@@ -90,6 +98,8 @@ function makePlayer(x, y, w, h, speed)
 	player.y = y;
 	player.speed = speed;
 	player.type = "player";
+	player.isInPortal = false;
+	player.zIndex = 1;
 
 	player.update = function(elapsed)
 	{
@@ -113,6 +123,8 @@ function makePlayer(x, y, w, h, speed)
 		var len = es.length;
 
 		var tsx, tsy;
+
+		var _isInPortal = false;
 
 		for (var i = 0; i < len; i++)
 		{
@@ -226,8 +238,31 @@ function makePlayer(x, y, w, h, speed)
 					return;
 				}
 			}
+
+			if (e.type === "portal")
+			{
+				if (this.isCollidingWith(e) && !_isInPortal && e.playerUsable)
+				{
+					_isInPortal = true;
+
+					if (!this.isInPortal)
+					{
+						var p = portalById(e.link);
+
+						if (p !== undefined)
+						{
+							var pb = p.bounds();
+							var mb = this.bounds();
+
+							this.x = pb.left + pb.width / 2 - mb.width / 2 - _x;
+							this.y = pb.top + pb.height / 2 - mb.height / 2 - _y;
+						}
+					}
+				}
+			}
 		}
 		
+		this.isInPortal = _isInPortal;
 
 		this.x += _x;
 		this.y += _y;
@@ -249,28 +284,44 @@ function addPlayer(x, y, w, h, speed)
 	game.addEntity(makePlayer(x, y, w, h, speed));
 }
 
-function makeWall(x, y, w, h)
+function makeWall(x, y, w, h, inv)
 {
 	if (w === undefined) w = 32;
 	if (h === undefined) h = 32;
+	if (inv === undefined) inv = false;
 
 	var wall = new Entity(undefined, w, h);
 
 	wall.type = "wall";
 	wall.x = x;
 	wall.y = y;
+	wall.invisible = inv;
+	wall.opacity = 1;
 
 	wall.draw = function(canvas)
 	{
-		canvas.fillRect(this.x, this.y, this.width, this.height, "black");
+		canvas.fillRect(this.x, this.y, this.width, this.height, "rgba(0,0,0," + this.opacity + ")");
 	};
+
+	if (inv)
+	{
+		wall.update = function(elapsed)
+		{
+			this.opacity -= elapsed * 0.001;
+
+			if (this.opacity <= 0)
+			{
+				this.opacity = 0;
+			}
+		}
+	}
 
 	return wall;
 }
 
-function addWall(x, y, w, h)
+function addWall(x, y, w, h, inv)
 {
-	game.addEntity(makeWall(x, y, w, h));
+	game.addEntity(makeWall(x, y, w, h, inv));
 }
 
 function makeEnemy(x, y, w, h, vx, vy)
@@ -286,6 +337,7 @@ function makeEnemy(x, y, w, h, vx, vy)
 	enemy.xVelocity = vx;
 	enemy.yVelocity = vy;
 	enemy.type = "enemy";
+	enemy.isInPortal = false;
 
 	enemy.draw = function(canvas)
 	{
@@ -300,45 +352,71 @@ function makeEnemy(x, y, w, h, vx, vy)
 		var _x = xv.round();
 		var _y = yv.round();
 
-		var es = game.getEntities(function(e)
-		{
-			return e.type === "wall";
-		});
+		var es = game.getEntities();
+
+		var _isInPortal = false;
 
 		for (var i = 0; i < es.length; i++)
 		{
 			var e = es[i];
 
-			if (this.willCollideWith(e, _x, 0))
+			if (e.type === "wall")
 			{
-				/*if (this.x < e.x)
+				if (this.willCollideWith(e, _x, 0))
 				{
-					_x = Math.abs(_x) - 2 * (Math.abs(_x) - (e.x - this.bounds().right));
-				}
-				else
-				{
-					_x = -Math.abs(_x) + 2 * (Math.abs(_x) - (this.x - e.bounds().right));
-				}*/
+					/*if (this.x < e.x)
+					{
+						_x = Math.abs(_x) - 2 * (Math.abs(_x) - (e.x - this.bounds().right));
+					}
+					else
+					{
+						_x = -Math.abs(_x) + 2 * (Math.abs(_x) - (this.x - e.bounds().right));
+					}*/
 
-				this.xVelocity *= -1;
-				_x = 0;
+					this.xVelocity *= -1;
+					_x = 0;
+				}
+
+				if (this.willCollideWith(e, 0, _y))
+				{
+					/*if (this.y < e.y)
+					{
+						_y = Math.abs(_y) - 2 * (Math.abs(_y) - (e.y - this.bounds().bottom));
+					}
+					else
+					{
+						_y = -Math.abs(_y) + 2 * (Math.abs(_y) - (this.y - e.bounds().bottom));
+					}*/
+
+					this.yVelocity *= -1;
+					_y = 0;
+				}
 			}
-
-			if (this.willCollideWith(e, 0, _y))
+			
+			if (e.type === "portal")
 			{
-				/*if (this.y < e.y)
+				if (this.isCollidingWith(e) && !_isInPortal && e.enemyUsable)
 				{
-					_y = Math.abs(_y) - 2 * (Math.abs(_y) - (e.y - this.bounds().bottom));
-				}
-				else
-				{
-					_y = -Math.abs(_y) + 2 * (Math.abs(_y) - (this.y - e.bounds().bottom));
-				}*/
+					_isInPortal = true;
 
-				this.yVelocity *= -1;
-				_y = 0;
+					if (!this.isInPortal)
+					{
+						var p = portalById(e.link);
+
+						if (p !== undefined)
+						{
+							var pb = p.bounds();
+							var mb = this.bounds();
+
+							this.x = pb.left + pb.width / 2 - mb.width / 2 - _x;
+							this.y = pb.top + pb.height / 2 - mb.height / 2 - _y;
+						}
+					}
+				}
 			}
 		}
+
+		this.isInPortal = _isInPortal;
 
 		this.x += _x;
 		this.y += _y;
@@ -377,6 +455,32 @@ function makeGoal(x, y, w, h)
 function addGoal(x, y, w, h)
 {
 	game.addEntity(makeGoal(x, y, w, h));
+}
+
+function makePortal(x, y, w, h, id, link, playerUsable, enemyUsable)
+{
+	var portal = new Entity(undefined, w, h);
+
+	portal.type = "portal";
+	portal.x = x;
+	portal.y = y;
+	portal.id = id;
+	portal.link = link;
+	portal.playerUsable = playerUsable;
+	portal.enemyUsable = enemyUsable;
+
+	portal.draw = function()
+	{
+		var color = (this.playerUsable ? (this.enemyUsable ? "#FFAAFF" : "#00AAFF") : (this.enemyUsable ? "#FFAAAA" : "#FFFFFF"));
+		canvas.fillRect(this.x, this.y, this.width, this.height, color);
+	};
+
+	return portal;
+}
+
+function addPortal(x, y, w, h, id, link, playerUsable, enemyUsable)
+{
+	game.addEntity(makePortal(x, y, w, h, id, link, playerUsable, enemyUsable));
 }
 
 window.onload = function()

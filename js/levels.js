@@ -32,11 +32,15 @@ function __loadLevelData(json)
 		}
 		else if (e.type === "wall")
 		{
-			addWall(e.x, e.y, e.width, e.height);
+			addWall(e.x, e.y, e.width, e.height, e.invisible);
 		}
 		else if (e.type === "goal")
 		{
 			addGoal(e.x, e.y, e.width, e.height);
+		}
+		else if (e.type === "portal")
+		{
+			addPortal(e.x, e.y, e.width, e.height, e.id, e.link, e.playerUsable, e.enemyUsable);
 		}
 	}
 }
@@ -51,6 +55,18 @@ var __levels = [
 	},
 	{
 		data: '{"width":1056,"height":448,"entities":[{"x":0,"y":0,"width":1056,"height":32,"type":"wall"},{"x":512,"y":32,"width":32,"height":32,"type":"player","speed":0.2},{"x":0,"y":32,"width":32,"height":384,"type":"wall"},{"x":1024,"y":32,"width":32,"height":384,"type":"wall"},{"x":0,"y":416,"width":1056,"height":32,"type":"wall"},{"x":384,"y":32,"width":32,"height":32,"type":"enemy","xVelocity":0.5,"yVelocity":0},{"x":640,"y":32,"width":32,"height":32,"type":"enemy","xVelocity":-0.5,"yVelocity":0},{"x":32,"y":64,"width":480,"height":64,"type":"wall"},{"x":544,"y":64,"width":480,"height":64,"type":"wall"},{"x":32,"y":32,"width":352,"height":32,"type":"wall"},{"x":672,"y":32,"width":352,"height":32,"type":"wall"},{"x":512,"y":384,"width":32,"height":32,"type":"enemy","xVelocity":0,"yVelocity":-0.3},{"x":480,"y":192,"width":32,"height":224,"type":"wall"},{"x":544,"y":192,"width":32,"height":224,"type":"wall"},{"x":32,"y":192,"width":32,"height":64,"type":"enemy","xVelocity":0.4,"yVelocity":0},{"x":448,"y":256,"width":32,"height":64,"type":"enemy","xVelocity":-0.4,"yVelocity":0},{"x":32,"y":320,"width":32,"height":64,"type":"enemy","xVelocity":0.4,"yVelocity":0},{"x":32,"y":384,"width":448,"height":32,"type":"goal"},{"x":576,"y":128,"width":64,"height":32,"type":"enemy","xVelocity":0,"yVelocity":0.3},{"x":640,"y":384,"width":64,"height":32,"type":"enemy","xVelocity":0,"yVelocity":-0.3},{"x":704,"y":128,"width":96,"height":32,"type":"enemy","xVelocity":0,"yVelocity":0.3},{"x":800,"y":384,"width":128,"height":32,"type":"enemy","xVelocity":0,"yVelocity":-0.3},{"x":992,"y":128,"width":32,"height":288,"type":"goal"}]}'
+	},
+	{
+		data: '{"width":1056,"height":96,"entities":[{"x":0,"y":64,"width":1056,"height":32,"type":"wall"},{"x":0,"y":0,"width":1056,"height":32,"type":"wall"},{"x":32,"y":32,"width":32,"height":32,"type":"player","speed":0.2},{"x":992,"y":32,"width":32,"height":32,"type":"goal"},{"x":0,"y":32,"width":32,"height":32,"type":"wall"},{"x":1024,"y":32,"width":32,"height":32,"type":"wall"},{"x":320,"y":32,"width":32,"height":32,"id":0,"link":1,"type":"portal","enemyUsable":false,"playerUsable":true},{"x":352,"y":32,"width":384,"height":32,"type":"enemy","xVelocity":0,"yVelocity":0},{"x":736,"y":32,"width":32,"height":32,"id":1,"link":0,"type":"portal","enemyUsable":false,"playerUsable":true}]}'
+	},
+	{
+		data: '{"width":1056,"height":576,"entities":[{"x":0,"y":32,"width":32,"height":512,"type":"wall"},{"x":1024,"y":32,"width":32,"height":512,"type":"wall"},{"x":0,"y":544,"width":1056,"height":32,"type":"wall"},{"x":0,"y":0,"width":1056,"height":32,"type":"wall"},{"x":512,"y":272,"width":32,"height":32,"type":"player","speed":0.2},{"x":288,"y":32,"width":64,"height":64,"type":"enemy","xVelocity":0.3,"yVelocity":0.3},{"x":288,"y":480,"width":64,"height":64,"type":"enemy","xVelocity":0.3,"yVelocity":-0.3},{"x":704,"y":32,"width":64,"height":64,"type":"enemy","xVelocity":-0.3,"yVelocity":0.3},{"x":704,"y":480,"width":64,"height":64,"type":"enemy","xVelocity":-0.3,"yVelocity":-0.3},{"x":224,"y":32,"width":32,"height":480,"type":"wall"},{"x":800,"y":64,"width":32,"height":480,"type":"wall"},{"x":32,"y":32,"width":192,"height":32,"type":"goal"},{"x":32,"y":64,"width":192,"height":32,"type":"enemy","xVelocity":0,"yVelocity":0.3},{"x":32,"y":352,"width":192,"height":32,"id":0,"link":1,"type":"portal","enemyUsable":false,"playerUsable":true},{"x":32,"y":224,"width":192,"height":32,"id":1,"link":0,"type":"portal","enemyUsable":false,"playerUsable":true},{"x":832,"y":512,"width":192,"height":32,"type":"goal"},{"x":832,"y":224,"width":192,"height":32,"id":2,"link":4,"type":"portal","enemyUsable":false,"playerUsable":true},{"x":832,"y":352,"width":192,"height":32,"id":3,"link":4,"type":"portal","enemyUsable":false,"playerUsable":true},{"x":928,"y":32,"width":32,"height":64,"type":"wall"},{"x":960,"y":64,"width":64,"height":32,"type":"wall"},{"x":960,"y":32,"width":32,"height":32,"id":4,"link":4,"type":"portal","enemyUsable":false,"playerUsable":true},{"x":992,"y":32,"width":32,"height":32,"type":"enemy","xVelocity":0,"yVelocity":0},{"x":832,"y":480,"width":192,"height":32,"type":"enemy","xVelocity":0,"yVelocity":-0.3},{"x":32,"y":480,"width":96,"height":64,"type":"wall"}]}'
+	},
+	{
+		data: '{"width":768,"height":128,"entities":[{"x":0,"y":32,"width":32,"height":64,"type":"wall"},{"x":736,"y":32,"width":32,"height":64,"type":"wall"},{"x":0,"y":96,"width":768,"height":32,"type":"wall"},{"x":0,"y":0,"width":768,"height":32,"type":"wall"},{"x":32,"y":32,"width":32,"height":32,"type":"player","speed":0.2},{"x":704,"y":32,"width":32,"height":64,"type":"goal"},{"x":672,"y":64,"width":32,"height":32,"type":"enemy","xVelocity":-0.3,"yVelocity":0},{"x":32,"y":64,"width":32,"height":32,"id":0,"link":1,"type":"portal","enemyUsable":true,"playerUsable":false},{"x":672,"y":32,"width":32,"height":32,"id":1,"link":0,"type":"portal","enemyUsable":true,"playerUsable":false}]}'
+	},
+	{
+		data: '{"width":1056,"height":576,"entities":[{"x":0,"y":32,"width":32,"height":512,"type":"wall"},{"x":1024,"y":32,"width":32,"height":512,"type":"wall"},{"x":0,"y":544,"width":1056,"height":32,"type":"wall"},{"x":0,"y":0,"width":1056,"height":32,"type":"wall"},{"x":64,"y":256,"width":32,"height":32,"type":"player","speed":0.2},{"x":128,"y":64,"width":32,"height":448,"type":"wall","invisible":true},{"x":992,"y":32,"width":32,"height":512,"type":"goal"},{"x":960,"y":32,"width":32,"height":64,"type":"wall","invisible":true},{"x":960,"y":480,"width":32,"height":64,"type":"wall","invisible":true},{"x":928,"y":64,"width":32,"height":32,"type":"enemy","xVelocity":-0.5,"yVelocity":0},{"x":928,"y":480,"width":32,"height":32,"type":"enemy","xVelocity":-0.5,"yVelocity":0},{"x":512,"y":224,"width":96,"height":96,"type":"enemy","xVelocity":0.2,"yVelocity":0.2}]}'
 	}
 
 ];
