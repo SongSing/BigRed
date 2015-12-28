@@ -60,6 +60,9 @@ function portalById(id)
 game.drawFunctionBefore = function(canvas)
 {
 	canvas.fill("#AAAAAA");
+	canvas.setFontSize("128px");
+	canvas.setTextBaseline("middle");
+	canvas.fillText(currentLevel + 1, canvas.width() / 2, canvas.height() / 2, "rgba(0,0,0,0.5)", undefined, "center");
 }
 
 loseState.drawFunctionAfter = function(canvas)
@@ -164,7 +167,8 @@ function makePlayer(x, y, w, h, speed)
 
 				if (this.willCollideWith(e, _x, _y) && _x !== 0 && _y !== 0)
 				{
-					var xd, yd;
+
+					/*var xd, yd;
 
 					if (b.right <= e.x && b.bottom <= e.y)
 					{
@@ -218,12 +222,12 @@ function makePlayer(x, y, w, h, speed)
 						{
 							_y = 0;
 						}
-					}
+					}*/
 				}
 			}
 			else if (e.type === "enemy")
 			{
-				if (this.willCollideWith(e, _x, _y) && !levelBuffer)
+				if (this.isCollidingWith(e) && !levelBuffer)
 				{
 					levelBuffer = true;
 					lose();
@@ -231,7 +235,7 @@ function makePlayer(x, y, w, h, speed)
 			}
 			else if (e.type === "goal")
 			{
-				if (this.willCollideWith(e, _x, _y) && !levelBuffer)
+				if (this.isCollidingWith(e) && !levelBuffer)
 				{
 					levelBuffer = true;
 					proceed();
@@ -249,13 +253,16 @@ function makePlayer(x, y, w, h, speed)
 					{
 						var p = portalById(e.link);
 
-						if (p !== undefined)
+						if (p !== undefined && e.id !== p.id)
 						{
 							var pb = p.bounds();
 							var mb = this.bounds();
 
-							this.x = pb.left + pb.width / 2 - mb.width / 2 - _x;
-							this.y = pb.top + pb.height / 2 - mb.height / 2 - _y;
+							this.x = pb.left + pb.width / 2 - mb.width / 2 ;
+							this.y = pb.top + pb.height / 2 - mb.height / 2;
+
+							_x = 0;
+							_y = 0;
 						}
 					}
 				}
@@ -403,7 +410,7 @@ function makeEnemy(x, y, w, h, vx, vy)
 					{
 						var p = portalById(e.link);
 
-						if (p !== undefined)
+						if (p !== undefined && e.id !== p.id)
 						{
 							var pb = p.bounds();
 							var mb = this.bounds();
