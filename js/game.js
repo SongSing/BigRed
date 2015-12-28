@@ -475,6 +475,7 @@ function makePortal(x, y, w, h, id, link, playerUsable, enemyUsable)
 	portal.link = link;
 	portal.playerUsable = playerUsable;
 	portal.enemyUsable = enemyUsable;
+	portal.zIndex = -1;
 
 	portal.draw = function()
 	{

@@ -105,5 +105,6 @@ var losePhrases = [
 	"dumb dumb dumb dumb dumb dumb (you) (you're dumb)",
 	"you're like if bad was a person",
 	"macaroni mother fucker",
-	"S H I T B O Y S"
+	"S H I T B O Y S",
+	"\"fuck\" -rina"
 ];
