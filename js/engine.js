@@ -35,6 +35,17 @@ var Key = // http://nokarma.org/2011/02/27/javascript-game-development-keyboard-
 	DOWN: 40,
 	SPACE: 32,
 	ESC: 27,
+	CHAR: function(char)
+	{
+		var a = "abcdefghijklmnopqrstuvwxyz";
+
+		if (a.indexOf(char.toLowerCase()) !== -1)
+		{
+			return 65 + a.indexOf(char.toLowerCase());
+		}
+
+		else return -1;
+	},
 
 	isDown: function(keyCode)
 	{

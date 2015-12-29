@@ -13,6 +13,11 @@ var lossCounter = 0;
 
 var levelBuffer = false;
 
+var kW = Key.CHAR("w");
+var kA = Key.CHAR("a");
+var kS = Key.CHAR("s");
+var kD = Key.CHAR("d");
+
 function loadLevel(i)
 {
 	var level = __levels[i].data;
@@ -108,8 +113,8 @@ function makePlayer(x, y, w, h, speed)
 	{
 		var _x, _y;
 
-		_x = +(Key.isDown(Key.RIGHT)) - +(Key.isDown(Key.LEFT));
-		_y = +(Key.isDown(Key.DOWN)) - +(Key.isDown(Key.UP));
+		_x = +(Key.isDown(Key.RIGHT) || Key.isDown(kD)) - +(Key.isDown(Key.LEFT) || Key.isDown(kA));
+		_y = +(Key.isDown(Key.DOWN) || Key.isDown(kS)) - +(Key.isDown(Key.UP) || Key.isDown(kW));
 
 		_x *= this.speed * elapsed;
 		_y *= this.speed * elapsed;
