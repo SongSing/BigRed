@@ -48,6 +48,9 @@ function __loadLevelData(json)
 var __levels = [
 
 	{
+		data: ''
+	},
+	{
 		data: '{"width":1024,"height":576,"entities":[{"x":0,"y":32,"width":32,"height":512,"type":"wall"},{"x":992,"y":32,"width":32,"height":512,"type":"wall"},{"x":0,"y":544,"width":1024,"height":32,"type":"wall"},{"x":0,"y":0,"width":1024,"height":32,"type":"wall"},{"x":64,"y":256,"width":32,"height":32,"type":"player","speed":0.2},{"x":928,"y":32,"width":64,"height":512,"type":"goal"},{"x":192,"y":512,"width":32,"height":32,"type":"enemy","xVelocity":0,"yVelocity":-0.2},{"x":384,"y":32,"width":32,"height":32,"type":"enemy","xVelocity":0,"yVelocity":0.2},{"x":576,"y":512,"width":32,"height":32,"type":"enemy","xVelocity":0,"yVelocity":-0.2},{"x":768,"y":32,"width":32,"height":32,"type":"enemy","xVelocity":0,"yVelocity":0.2}]}'
 	},
 	{

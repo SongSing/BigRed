@@ -1,0 +1,26 @@
+#canvas
+{
+  position:absolute;
+  left:8px;
+  top:8px;
+  z-index:100;
+}
+
+#customImport
+{
+  position:absolute;
+  right:8px;
+  top:8px;
+  resize:none;
+  height:400px;
+  width:200px;
+}
+
+#import
+{
+  position:absolute;
+  right:8px;
+  top:416px;
+  width:200px;
+  padding:4px;
+}

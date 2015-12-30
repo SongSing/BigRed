@@ -6,7 +6,7 @@ var loseState = new State();
 var enemies = [];
 
 var updateTimer, drawTimer;
-var currentLevel = 0;
+var currentLevel = 1;
 
 var lostBefore = false;
 var lossCounter = 0;
@@ -17,6 +17,15 @@ var kW = Key.CHAR("w");
 var kA = Key.CHAR("a");
 var kS = Key.CHAR("s");
 var kD = Key.CHAR("d");
+
+function importLevel(data)
+{
+	currentLevel = 0;
+	__levels[0].data = data;
+	reset();
+	loadLevel(0);
+	levelBuffer = false;
+}
 
 function loadLevel(i)
 {
@@ -67,7 +76,7 @@ game.drawFunctionBefore = function(canvas)
 	canvas.fill("#AAAAAA");
 	canvas.setFontSize("128px");
 	canvas.setTextBaseline("middle");
-	canvas.fillText(currentLevel + 1, canvas.width() / 2, canvas.height() / 2, "rgba(0,0,0,0.5)", undefined, "center");
+	canvas.fillText(currentLevel, canvas.width() / 2, canvas.height() / 2, "rgba(0,0,0,0.5)", undefined, "center");
 }
 
 loseState.drawFunctionAfter = function(canvas)
@@ -455,6 +464,7 @@ function makeGoal(x, y, w, h)
 	goal.type = "goal";
 	goal.x = x;
 	goal.y = y;
+	goal.zIndex = -2;
 
 	goal.draw = function(canvas)
 	{
@@ -507,5 +517,11 @@ window.onload = function()
 	addState(loseState);
 	makeStateCurrent(0);
 
-	loadLevel(0);
+	loadLevel(currentLevel);
+
+	$("#import").click(function()
+	{
+		levelBuffer = true;
+		importLevel($("#customImport").val());
+	});
 }
